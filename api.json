@@ -1,0 +1,146 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "3WL Service API",
+    "version" : "1.0.0",
+    "title" : "3WL Service API",
+    "contact" : {
+      "email" : "api@theworldinwhichwelive.com"
+    },
+    "license" : {
+      "name" : "Apache 2.0",
+      "url" : "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "host" : "api.theworldinwhichwelive.com",
+  "basePath" : "/1.0.0",
+  "tags" : [ {
+    "name" : "admins",
+    "description" : "Secured Admin-only calls"
+  }, {
+    "name" : "developers",
+    "description" : "Operations available to regular developers"
+  } ],
+  "schemes" : [ "https", "http" ],
+  "paths" : {
+    "/toons" : {
+      "get" : {
+        "tags" : [ "developers", "admins" ],
+        "summary" : "searches toons",
+        "description" : "By passing in the appropriate options, you can search for\navailable toons in the system\n",
+        "operationId" : "searchToons",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "searchString",
+          "in" : "query",
+          "description" : "pass an optional search string for looking up toons",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "skip",
+          "in" : "query",
+          "description" : "number of records to skip for pagination",
+          "required" : false,
+          "type" : "integer",
+          "minimum" : 0,
+          "format" : "int32"
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "maximum number of records to return",
+          "required" : false,
+          "type" : "integer",
+          "maximum" : 50,
+          "minimum" : 0,
+          "format" : "int32"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "search results matching criteria",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/toon"
+              }
+            }
+          },
+          "400" : {
+            "description" : "bad input parameter"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "admins" ],
+        "summary" : "adds a toons item",
+        "description" : "Adds an item to the system",
+        "operationId" : "addToon",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "toonsItem",
+          "description" : "Toons item to add",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/toon"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "item created"
+          },
+          "400" : {
+            "description" : "invalid input, object invalid"
+          },
+          "409" : {
+            "description" : "an existing item already exists"
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "toon" : {
+      "type" : "object",
+      "required" : [ "id", "manufacturer", "name", "releaseDate" ],
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "format" : "uuid",
+          "example" : "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        },
+        "caption" : {
+          "type" : "string",
+          "example" : "A caption for the toon"
+        },
+        "releaseDate" : {
+          "type" : "string",
+          "format" : "date-time",
+          "example" : "2016-08-29T09:12:33.001Z"
+        },
+        "url": {},
+        "description":{
+          "type" : "string",
+          "format": "uri",
+          "example" : "A description of the toon"
+        },
+        "tags":{
+          "type": "array",
+          "items": {
+            "type": "string "
+          }
+        }
+      },
+      "example" : {
+        "releaseDate" : "2016-08-29T09:12:33.001Z",
+        "name" : "Widget Adapter",
+        "id" : "d290f1ee-6c54-4b01-90e6-d701748f0851",
+        "manufacturer" : {
+          "phone" : "408-867-5309",
+          "name" : "ACME Corporation",
+          "homePage" : "https://www.acme-corp.com"
+        }
+      }
+    }
+  }
+}
